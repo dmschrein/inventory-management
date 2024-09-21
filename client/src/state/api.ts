@@ -58,6 +58,7 @@ export interface User {
   email: string;
 }
 
+/* API Service to manage requests and stat in a declarative way */
 export const api = createApi({
   /* Sets up the base URL for the API */
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
@@ -70,6 +71,7 @@ export const api = createApi({
   Type: The type of data the query will return.
   Parameters: Input for the query (if any).
   Query function: Defines the URL and any additional request parameters (e.g., search strings).
+  Queries fetch data
 
   * getDashBoardMetrics Query:
   * sends GET request to the /dashboard endpoint
@@ -127,7 +129,7 @@ export const api = createApi({
   }),
 });
 
-/* Export hooks */
+/* Export React hooks for each query or mutation. Used in components to easily interact with API */
 export const {
   useGetDashboardMetricsQuery,
   useGetProductsQuery,

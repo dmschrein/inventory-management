@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import Header from "@/app/[components]/Header";
+import React, { useState } from "react"; // Imports React and useState for state management
+import Header from "@/app/[components]/Header"; // Imports a custom Header component
 
+// Defines the type for user settings, which can be a text input or toggle (boolean) switch
 type UserSetting = {
-  label: string;
-  value: string | boolean;
-  type: "text" | "toggle";
+  label: string; // The name/label of the setting (e.g., "Username", "Email")
+  value: string | boolean; // The current value of the setting, which could be a string or a boolean (for toggles)
+  type: "text" | "toggle"; // Specifies whether the setting is a text input or a toggle switch
 };
 
+// Mock data simulating user settings with default values for demonstration purposes
 const mockSettings: UserSetting[] = [
   { label: "Username", value: "john_doe", type: "text" },
   { label: "Email", value: "john.doe@example.com", type: "text" },
@@ -17,9 +19,12 @@ const mockSettings: UserSetting[] = [
   { label: "Language", value: "English", type: "text" },
 ];
 
+// Main functional component that renders the Settings page
 const Settings = () => {
+  // State to manage user settings, initialized with mockSettings data
   const [userSettings, setUserSettings] = useState<UserSetting[]>(mockSettings);
 
+  // Function to handle the toggle (boolean) switch changes for toggle-type settings
   const handleToggleChange = (index: number) => {
     const settingsCopy = [...userSettings];
     settingsCopy[index].value = !settingsCopy[index].value as boolean;
@@ -28,9 +33,12 @@ const Settings = () => {
 
   return (
     <div className="w-full">
+      {/* Renders the Header component with the title "User Settings" */}
       <Header name="User Settings" />
       <div className="overflow-x-auto mt-5 shadow-md">
+        {/* Creates a responsive table to display the settings */}
         <table className="min-w-full bg-white rounded-lg">
+          {/* Table header */}
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
@@ -41,19 +49,24 @@ const Settings = () => {
               </th>
             </tr>
           </thead>
+          {/* Table body that maps over the userSettings array */}
           <tbody>
             {userSettings.map((setting, index) => (
+              // Each row represents a setting and its value
               <tr className="hover:bg-blue-50" key={setting.label}>
                 <td className="py-2 px-4">{setting.label}</td>
                 <td className="py-2 px-4">
+                  {/* If the setting type is a toggle (boolean switch) */}
                   {setting.type === "toggle" ? (
                     <label className="inline-flex relative items-center cursor-pointer">
+                      {/* Checkbox input for toggle */}
                       <input
                         type="checkbox"
                         className="sr-only peer"
                         checked={setting.value as boolean}
                         onChange={() => handleToggleChange(index)}
                       />
+                      {/* Visual representation of the toggle switch */}
                       <div
                         className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-blue-400 peer-focus:ring-4 
                         transition peer-checked:after:translate-x-full peer-checked:after:border-white 
@@ -63,6 +76,7 @@ const Settings = () => {
                       ></div>
                     </label>
                   ) : (
+                    // If the setting type is text (e.g., Username, Email, etc.)
                     <input
                       type="text"
                       className="px-4 py-2 border rounded-lg text-gray-500 focus:outline-none focus:border-blue-500"

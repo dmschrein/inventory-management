@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Header from "../[components]/Header";
+import Header from "@/app/[components]/Header";
 
 type UserSetting = {
   label: string;
@@ -12,9 +12,9 @@ type UserSetting = {
 const mockSettings: UserSetting[] = [
   { label: "Username", value: "john_doe", type: "text" },
   { label: "Email", value: "john.doe@example.com", type: "text" },
-  { label: "Notification", value: true, type: "text" },
+  { label: "Notification", value: true, type: "toggle" },
   { label: "Dark Mode", value: false, type: "toggle" },
-  { label: "Language", value: "Englis", type: "text" },
+  { label: "Language", value: "English", type: "text" },
 ];
 
 const Settings = () => {
@@ -36,14 +36,15 @@ const Settings = () => {
               <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
                 Setting
               </th>
+              <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                Value
+              </th>
             </tr>
-            <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
-              Value
-            </th>
           </thead>
           <tbody>
             {userSettings.map((setting, index) => (
               <tr className="hover:bg-blue-50" key={setting.label}>
+                <td className="py-2 px-4">{setting.label}</td>
                 <td className="py-2 px-4">
                   {setting.type === "toggle" ? (
                     <label className="inline-flex relative items-center cursor-pointer">

@@ -45,6 +45,7 @@ const themes = {
   light: {
     ...lightTheme,
     white: "#ffffff",
+    black: "000000",
   },
   dark: {
     ...darkTheme,

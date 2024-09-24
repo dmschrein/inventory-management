@@ -1,14 +1,14 @@
-import { useRef } from "react"; // react hook to create a mutable reference that persists across re-renders
-import { combineReducers, configureStore } from "@reduxjs/toolkit"; // functions for setting up the store
+import { useRef } from "react"; // React hook to create a mutable reference that persists across re-renders
+import { combineReducers, configureStore } from "@reduxjs/toolkit"; // Functions for setting up the store
 import {
   TypedUseSelectorHook,
   useDispatch,
   useSelector,
   Provider,
-} from "react-redux"; //react-redux utilities to connect Redux to a react app
-import globalReducer from "@/state"; // main reducer for the app's global state
-import { api } from "@/state/api"; // another reducer
-import { setupListeners } from "@reduxjs/toolkit/query"; // function to set up listeners for automatic cache invalidation in queries
+} from "react-redux"; // React-Redux utilities to connect Redux to a React app
+import globalReducer from "@/state"; // Main reducer for the app's global state
+import { api } from "@/state/api"; // API slice reducer
+import { setupListeners } from "@reduxjs/toolkit/query"; // Function to set up listeners for automatic cache invalidation in queries
 
 import {
   persistStore,
@@ -19,41 +19,43 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist"; // functions to persist the Redux store across sessions (using local storage)
-import { PersistGate } from "redux-persist/integration/react"; // a component for redux-persist that delays the rendering of children until the persisted state has been restored
-import createWebStorage from "redux-persist/lib/storage/createWebStorage"; // a utility to create a storage for persistance in browsers
+} from "redux-persist"; // Functions to persist the Redux store across sessions (using local storage)
+import { PersistGate } from "redux-persist/integration/react"; // Component for redux-persist that delays rendering of children until the persisted state has been restored
+import createWebStorage from "redux-persist/lib/storage/createWebStorage"; // Utility to create storage for persistence in browsers
 
 /* REDUX PERSISTENCE */
 const createNoopStorage = () => {
-  // a custom storage engine that returns a promise resolving to null for environments where window is not available
+  // A custom storage engine that returns a promise resolving to null for environments where window is not available
   return {
-    getItem(_key: any) {
+    getItem(): Promise<string | null> {
       return Promise.resolve(null);
     },
-    setItem(_key: any, value: any) {
-      return Promise.resolve(value);
+    setItem(): Promise<void> {
+      return Promise.resolve();
     },
-    removeItem(_key: any) {
+    removeItem(): Promise<void> {
       return Promise.resolve();
     },
   };
 };
 
-const storage = //if app is running in the browser it uses local storage or NoopStorage for SSR
+const storage =
   typeof window === "undefined"
     ? createNoopStorage()
-    : createWebStorage("local");
+    : createWebStorage("local"); // Uses local storage in the browser or NoopStorage for SSR
 
-// ensures that redux persistence only works in a browser environment and won't break in server-side rendering
+// Ensures that redux persistence only works in a browser environment and won't break in server-side rendering
 const persistConfig = {
   key: "root",
   storage,
   whitelist: ["global"],
 };
+
 const rootReducer = combineReducers({
   global: globalReducer,
   [api.reducerPath]: api.reducer,
 });
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 /* REDUX STORE
@@ -89,8 +91,8 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
  * StoreProvider: A React component that provides the Redux store and persistence to the app.
  * storeRef: A useRef hook used to create the store only once (ensuring the store doesn't get recreated on every render)
  * persistor: created using persistStore, manages persisting the store
- * Provider: wrap the children with Redux's Provider which gives access to the Redux store in the app
- * PersistGate: Ensure that the app's UI isn't rendered until the persisted state has been rehydrated
+ * Provider: wraps the children with Redux's Provider which gives access to the Redux store in the app
+ * PersistGate: Ensures that the app's UI isn't rendered until the persisted state has been rehydrated
  */
 export default function StoreProvider({
   children,
